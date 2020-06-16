@@ -1,0 +1,24 @@
+version: '3'
+services:
+  na-service:
+    image: na-service
+    ports:
+      - 8090:8090
+    depends_on:
+      - database
+  na-data-ingestor:
+    image: na-data-ingestor
+    ports:
+      - 8091:8091
+  database:
+    image: mysql:5.7.30
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    volumes:
+      - na-mysql-data:/var/lib/mysql
+    restart: always
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+volumes:
+  na-mysql-data:
