@@ -1,4 +1,7 @@
 FROM openjdk:8-jdk-alpine
+
+MAINTAINER Vladyslav Yemelianov <emelyanov.vladyslav@gmail.com>
+
 RUN addgroup -S naservice && adduser -S naservice -G naservice
 USER naservice:naservice
 ARG DEPENDENCY=target/dependency

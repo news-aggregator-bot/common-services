@@ -13,4 +13,6 @@ public class PageParsedData {
 
     private final String description;
 
+    private final String author;
+
 }

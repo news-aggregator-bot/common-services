@@ -22,6 +22,8 @@ public class NewsNote extends DatedEntity {
 
     private String description;
 
+    private String author;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_source_page")
     @JsonIgnore

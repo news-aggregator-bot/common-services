@@ -47,7 +47,7 @@ public class NewsService implements INewsService {
     }
 
     private Stream<NewsNote> process(SourcePage page) {
-        return page.getContentTags()
+        return page.getContentBlocks()
             .parallelStream()
             .map(tag -> webPageParser.parse(page, tag))
             .flatMap(List::stream)
@@ -61,6 +61,7 @@ public class NewsService implements INewsService {
         note.setTitle(data.getTitle());
         note.setUrl(data.getLink());
         note.setDescription(data.getDescription());
+        note.setAuthor(data.getAuthor());
         note.setSourcePage(page);
         return note;
     }

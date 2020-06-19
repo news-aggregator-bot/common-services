@@ -3,6 +3,7 @@ package vlad110kg.news.aggregator.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vlad110kg.news.aggregator.entity.Category;
+import vlad110kg.news.aggregator.entity.CategoryLocalisation;
 import vlad110kg.news.aggregator.repository.CategoryLocalisationRepository;
 import vlad110kg.news.aggregator.repository.CategoryRepository;
 
@@ -41,6 +42,16 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public void delete(long id) {
-        repository.deleteById(id);
+        find(id).ifPresent(c -> repository.deleteById(id));
+    }
+
+    @Override
+    public List<CategoryLocalisation> saveAllLocalisations(Collection<CategoryLocalisation> categories) {
+        return localisationRepository.saveAll(categories);
+    }
+
+    @Override
+    public Optional<CategoryLocalisation> findLocalisationByValue(String value) {
+        return localisationRepository.findByValue(value);
     }
 }

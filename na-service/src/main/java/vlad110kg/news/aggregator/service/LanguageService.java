@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import vlad110kg.news.aggregator.entity.Language;
 import vlad110kg.news.aggregator.repository.LanguageRepository;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,6 +20,11 @@ public class LanguageService implements ILanguageService {
     @Override
     public Language save(Language language) {
         return repository.save(language);
+    }
+
+    @Override
+    public List<Language> saveAll(Collection<Language> languages) {
+        return repository.saveAll(languages);
     }
 
     @Override

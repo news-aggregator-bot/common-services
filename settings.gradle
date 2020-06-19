@@ -1,4 +1,4 @@
 rootProject.name = 'common-services'
 include 'na-service'
-include 'na-data-ingestor'
+include 'na-registry'
 

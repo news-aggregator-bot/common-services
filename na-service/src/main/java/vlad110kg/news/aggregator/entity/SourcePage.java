@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
@@ -43,13 +44,8 @@ public class SourcePage extends DatedEntity {
     )
     private List<Category> categories;
 
-    @ManyToMany
-    @JoinTable(
-        name = "source_page_tag",
-        joinColumns = {@JoinColumn(name = "id_source_page")},
-        inverseJoinColumns = {@JoinColumn(name = "id_content_tag")}
-    )
+    @OneToMany(mappedBy = "sourcePage")
     @JsonIgnore
-    private List<SourcePageContentTag> contentTags;
+    private List<ContentBlock> contentBlocks;
 
 }

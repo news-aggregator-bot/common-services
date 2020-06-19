@@ -1,25 +1,24 @@
 package vlad110kg.news.aggregator.service;
 
+import vlad110kg.news.aggregator.entity.ContentTag;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import vlad110kg.news.aggregator.entity.Source;
-import vlad110kg.news.aggregator.entity.SourcePageContentTag;
-
 public interface IContentTagService {
 
-    List<SourcePageContentTag> findAll();
+    List<ContentTag> findAll();
 
-    List<SourcePageContentTag> findByIds(Collection<Long> ids);
+    List<ContentTag> findByIds(Collection<Long> ids);
 
-    List<SourcePageContentTag> findBySource(Source source);
+    Optional<ContentTag> findByValue(String value);
 
-    Optional<SourcePageContentTag> findById(Long id);
+    Optional<ContentTag> findById(Long id);
 
-    SourcePageContentTag save(SourcePageContentTag tag);
+    ContentTag save(ContentTag tag);
 
-    List<SourcePageContentTag> saveAll(List<SourcePageContentTag> tags);
+    List<ContentTag> saveAll(List<ContentTag> tags);
 
     void delete(Long id);
 }

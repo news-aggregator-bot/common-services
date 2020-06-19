@@ -43,7 +43,7 @@ public class GodCategoryController {
             category.setParent(parent);
             return category;
         }).collect(Collectors.toList());
-        return categoryService.saveAll(categories);
+        return categoryService.saveAllLocalisations(categories);
     }
 
     private Category toCategory(CategoryRequest request) {

@@ -4,9 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vlad110kg.news.aggregator.entity.Source;
-import vlad110kg.news.aggregator.entity.SourcePageContentTag;
-import vlad110kg.news.aggregator.repository.SourcePageContentTagRepository;
+import vlad110kg.news.aggregator.entity.ContentTag;
+import vlad110kg.news.aggregator.repository.ContentTagRepository;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,37 +16,37 @@ import java.util.Optional;
 public class ContentTagService implements IContentTagService {
 
     @Autowired
-    private SourcePageContentTagRepository repository;
+    private ContentTagRepository repository;
 
     @Override
-    public List<SourcePageContentTag> findAll() {
+    public List<ContentTag> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public List<SourcePageContentTag> findByIds(Collection<Long> ids) {
+    public List<ContentTag> findByIds(Collection<Long> ids) {
         return repository.findAllById(ids);
     }
 
     @Override
-    public List<SourcePageContentTag> findBySource(Source source) {
-        return repository.findBySource(source);
+    public Optional<ContentTag> findByValue(String value) {
+        return repository.findByValue(value);
     }
 
     @Override
-    public Optional<SourcePageContentTag> findById(Long id) {
+    public Optional<ContentTag> findById(Long id) {
         return repository.findById(id);
     }
 
     @Override
     @Transactional
-    public SourcePageContentTag save(SourcePageContentTag tag) {
+    public ContentTag save(ContentTag tag) {
         return repository.save(tag);
     }
 
     @Override
     @Transactional
-    public List<SourcePageContentTag> saveAll(List<SourcePageContentTag> tags) {
+    public List<ContentTag> saveAll(List<ContentTag> tags) {
         return repository.saveAll(tags);
     }
 

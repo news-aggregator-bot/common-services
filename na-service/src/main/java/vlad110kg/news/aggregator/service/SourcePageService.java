@@ -8,6 +8,7 @@ import vlad110kg.news.aggregator.repository.SourcePageRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SourcePageService implements ISourcePageService {
@@ -23,6 +24,11 @@ public class SourcePageService implements ISourcePageService {
     @Override
     public List<SourcePage> findBySource(Source source) {
         return repository.findAllBySource(source);
+    }
+
+    @Override
+    public Optional<SourcePage> findByUrl(String url) {
+        return repository.findByUrl(url);
     }
 
     @Override

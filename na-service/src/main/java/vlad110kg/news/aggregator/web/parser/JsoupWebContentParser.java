@@ -1,22 +1,25 @@
 package vlad110kg.news.aggregator.web.parser;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.jsoup.select.Evaluator;
 import org.jsoup.select.Evaluator.Class;
-import vlad110kg.news.aggregator.domain.PageParsedData;
-import vlad110kg.news.aggregator.entity.SourcePage;
-import vlad110kg.news.aggregator.entity.SourcePageContentTag;
-import vlad110kg.news.aggregator.web.reader.WebPageReader;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import vlad110kg.news.aggregator.domain.PageParsedData;
+import vlad110kg.news.aggregator.entity.ContentBlock;
+import vlad110kg.news.aggregator.entity.ContentTag;
+import vlad110kg.news.aggregator.entity.ContentTagType;
+import vlad110kg.news.aggregator.entity.SourcePage;
+import vlad110kg.news.aggregator.web.reader.WebPageReader;
+
+import java.util.Collections;
+import java.util.List;
 
 @Component("defaultParser")
 public class JsoupWebContentParser implements WebContentParser {
@@ -29,27 +32,50 @@ public class JsoupWebContentParser implements WebContentParser {
     private ObjectMapper objectMapper;
 
     @Override
-    public List<PageParsedData> parse(SourcePage page, SourcePageContentTag tag) {
+    public List<PageParsedData> parse(SourcePage page, ContentBlock block) {
         Document doc = pgRdr.read(page.getUrl());
-        Elements mainClassElems = doc.select(classTag(tag.getMain()));
 
-        Builder<PageParsedData> datas = ImmutableList.builder();
-        for (Element wrapper : mainClassElems) {
+        ContentTag mainTag = block.findByType(ContentTagType.MAIN);
+        ContentTag titleTag = block.findByType(ContentTagType.TITLE);
+        ContentTag linkTag = block.findByType(ContentTagType.LINK);
+        ContentTag descriptionTag = block.findByType(ContentTagType.DESCRIPTION);
+        ContentTag authorTag = block.findByType(ContentTagType.AUTHOR);
 
-            Element titleEl = wrapper.selectFirst(classTag(tag.getTitle()));
+        if (mainTag != null) {
+            Elements mainClassElems = doc.select(classTag(mainTag.getValue()));
 
-            datas.add(PageParsedData.builder()
-                .title(titleEl.text())
-                .link(titleEl.attr("href"))
-                .description(getDescription(tag, wrapper))
-                .build());
+            Builder<PageParsedData> datas = ImmutableList.builder();
+            for (Element wrapper : mainClassElems) {
+
+                Element titleEl = wrapper.selectFirst(classTag(titleTag.getValue()));
+                PageParsedData.PageParsedDataBuilder dataBuilder = PageParsedData.builder();
+                dataBuilder.title(titleEl.text());
+                if (linkTag == null) {
+                    Element a = titleEl.selectFirst(new Evaluator.Tag("a"));
+                    dataBuilder.link(a.attr("href"));
+                } else {
+                    dataBuilder.link(titleEl.attr("href"));
+                }
+                dataBuilder.description(getDescription(descriptionTag, wrapper))
+                    .author(getAuthor(authorTag, wrapper));
+
+                datas.add(dataBuilder.build());
+            }
+            return datas.build();
         }
-        return datas.build();
+        return Collections.emptyList();
     }
 
-    private String getDescription(SourcePageContentTag contentTag, Element wrapper) {
-        if (contentTag.getDescription() != null) {
-            return wrapper.selectFirst(classTag(contentTag.getDescription())).text();
+    private String getDescription(ContentTag contentTag, Element wrapper) {
+        if (contentTag != null) {
+            return wrapper.selectFirst(classTag(contentTag.getValue())).text();
+        }
+        return null;
+    }
+
+    private String getAuthor(ContentTag authorTag, Element wrapper) {
+        if (authorTag != null) {
+            return wrapper.selectFirst(classTag(authorTag.getValue())).text();
         }
         return null;
     }
