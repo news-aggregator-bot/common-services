@@ -8,8 +8,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vlad110kg.news.aggregator.data.ingestor.client.ServiceClient;
 import vlad110kg.news.aggregator.domain.dto.CategoryLocalisationDto;
+import vlad110kg.news.aggregator.facade.IngestionCategoryLocalisationFacade;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.Map;
 public class LocalisationIngestionService implements IngestionService {
 
     @Autowired
-    private ServiceClient serviceClient;
+    private IngestionCategoryLocalisationFacade ingestLocalisations;
 
     @Override
     public void ingest(InputStream data) {
@@ -63,7 +63,7 @@ public class LocalisationIngestionService implements IngestionService {
                 }
                 localisations.add(categoryLocalisation);
             }
-            serviceClient.ingestLocalisations(localisations);
+            ingestLocalisations.ingest(localisations);
         } catch (Exception ioe) {
             ioe.printStackTrace();
         }
