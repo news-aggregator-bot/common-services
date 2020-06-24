@@ -10,13 +10,10 @@ version = '0-SNAPSHOT'
 
 def springVersion = '2.3.0.RELEASE'
 def lombokVersion = '1.18.12'
-sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
 }
-
-mainClassName = 'vlad110kg.news.aggregator.NewsAggregatorApplication'
 
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
