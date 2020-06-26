@@ -1,7 +1,7 @@
 version: '3'
 services:
   na-service:
-    image: na-service
+    build: na-service
     ports:
       - 8090:8090
     depends_on:
@@ -13,6 +13,8 @@ services:
   na-registry:
     build: na-registry
     restart: always
+    ports:
+      - 8761:8761
   database:
     image: mysql:5.7.30
     environment:
@@ -25,3 +27,7 @@ services:
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
 volumes:
   na-mysql-data:
+networks:
+  default:
+    external:
+      name: "na-network"
