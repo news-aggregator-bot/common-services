@@ -1,6 +1,7 @@
 package vlad110kg.news.aggregator.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vlad110kg.news.aggregator.entity.Category;
 import vlad110kg.news.aggregator.entity.CategoryLocalisation;
@@ -28,6 +29,16 @@ public class CategoryService implements ICategoryService {
     @Override
     public List<Category> saveAll(Collection<Category> categories) {
         return repository.saveAll(categories);
+    }
+
+    @Override
+    public List<Category> findAll(Pageable pageable) {
+        return repository.findAll(pageable).toList();
+    }
+
+    @Override
+    public long countAll() {
+        return repository.count();
     }
 
     @Override
