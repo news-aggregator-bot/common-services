@@ -3,6 +3,7 @@ package vlad110kg.news.aggregator.facade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import vlad110kg.news.aggregator.domain.dto.request.ListCategoryRequest;
 import vlad110kg.news.aggregator.domain.dto.response.CategoryResponse;
 import vlad110kg.news.aggregator.domain.dto.response.ListCategoryResponse;
 import vlad110kg.news.aggregator.entity.Category;
@@ -29,14 +30,37 @@ public class CategoryFacade {
     @Autowired
     private ILanguageService languageService;
 
-    public ListCategoryResponse listAll(long chatId, int page, int size) {
-        Reader reader = readerService.find(chatId).orElse(null);
+    public ListCategoryResponse listAll(ListCategoryRequest request) {
+        Reader reader = readerService.find(request.getChatId()).orElse(null);
         if (reader == null) {
-            return ListCategoryResponse.builder().error("Reader with chat id " + chatId + " not found").build();
+            return ListCategoryResponse.builder()
+                .error("Reader with chat id " + request.getChatId() + " not found")
+                .build();
         }
-        PageRequest req = PageRequest.of(page - 1, size);
+        PageRequest req = PageRequest.of(request.getPage() - 1, request.getSize());
+        return getListCategoryResponse(reader, categoryService.findAll(req));
+    }
+
+    public ListCategoryResponse listSub(ListCategoryRequest request) {
+        Category parent = categoryService.find(request.getParentId()).orElse(null);
+        if (parent == null) {
+            return ListCategoryResponse.builder()
+                .error("Parent category " + request.getParentId() + " not found")
+                .build();
+        }
+        Reader reader = readerService.find(request.getChatId()).orElse(null);
+        if (reader == null) {
+            return ListCategoryResponse.builder()
+                .error("Reader with chat id " + request.getChatId() + " not found")
+                .build();
+        }
+        PageRequest req = PageRequest.of(request.getPage() - 1, request.getSize());
+        return getListCategoryResponse(reader, categoryService.findByParent(parent, req));
+    }
+
+    private ListCategoryResponse getListCategoryResponse(Reader reader, List<Category> categories) {
         try {
-            List<CategoryResponse> responses = categoryService.findAll(req)
+            List<CategoryResponse> responses = categories
                 .stream()
                 .map(c -> toResponse(c, reader))
                 .collect(Collectors.toList());

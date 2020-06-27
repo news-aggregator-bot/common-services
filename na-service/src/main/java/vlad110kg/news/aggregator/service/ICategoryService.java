@@ -16,6 +16,8 @@ public interface ICategoryService {
 
     List<Category> findAll(Pageable pageable);
 
+    List<Category> findByParent(Category parent, Pageable pageable);
+
     long countAll();
 
     Optional<Category> find(Long id);

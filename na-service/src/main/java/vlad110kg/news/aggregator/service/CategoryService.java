@@ -37,6 +37,11 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+    public List<Category> findByParent(Category parent, Pageable pageable) {
+        return repository.findAllByParent(parent, pageable);
+    }
+
+    @Override
     public long countAll() {
         return repository.count();
     }
