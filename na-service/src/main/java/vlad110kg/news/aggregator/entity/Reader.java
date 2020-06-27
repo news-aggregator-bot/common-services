@@ -1,19 +1,21 @@
 package vlad110kg.news.aggregator.entity;
 
-import java.util.List;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -21,17 +23,33 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class Reader extends DatedEntity {
 
-    @Column(nullable = false)
-    private String nick;
+    @JsonProperty("chat_id")
+    @Column(nullable = false, unique = true)
+    private Long chatId;
 
     @Column(nullable = false)
-    private String name;
+    private String username;
 
-    private boolean enabled;
+    @Column(name = "first_name", nullable = false)
+    @JsonProperty("first_name")
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    @JsonProperty("last_name")
+    private String lastName;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Platform platform;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "platform")
-    private Platform platform;
+    @JoinColumn(name = "primary_language")
+    @JsonProperty("primary_language")
+    private Language primaryLanguage;
 
     @ManyToMany
     @JoinTable(
@@ -48,4 +66,8 @@ public class Reader extends DatedEntity {
         inverseJoinColumns = {@JoinColumn(name = "language")}
     )
     private Set<Language> languages;
+
+    public enum Status {
+        ENABLED, DISABLED
+    }
 }

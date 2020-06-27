@@ -7,8 +7,7 @@ create table category_localisation (id bigint not null auto_increment primary ke
 create table tag (id bigint not null auto_increment primary key, name varchar(255) not null unique);
 create table `language` (lang varchar(50) not null primary key, name varchar(255) not null unique, localized varchar(255) not null);
 create table news_note (id bigint not null auto_increment primary key, title varchar(255) not null, url varchar(255) not null unique, description text null, author varchar(255) null, creation_date datetime(6), update_date datetime(6), id_source_page bigint not null);
-create table reader (id bigint not null auto_increment primary key, nick varchar(255) not null unique, name varchar(255) not null, creation_date datetime(6), update_date datetime(6), platform varchar(50) not null);
-create table platform (name varchar(50) not null primary key);
+create table reader (id bigint not null auto_increment primary key, chat_id bigint not null unique, username varchar(100) not null, first_name varchar(255) not null, last_name varchar(255) not null, status varchar(50) not null, creation_date datetime(6), update_date datetime(6), platform varchar(50) not null);
 
 
 create table content_block_tag (id_block bigint not null, id_tag bigint not null);
@@ -25,7 +24,6 @@ alter table source_page_category add foreign key (id_category) references catego
 alter table content_block add foreign key (id_source_page) references source_page(id);
 alter table content_block_tag add foreign key (id_block) references content_block(id);
 alter table content_block_tag add foreign key (id_tag) references content_tag(id);
-alter table reader add foreign key (platform) references platform(name);
 alter table reader_lang add foreign key (id_reader) references reader(id);
 alter table reader_lang add foreign key (language) references language(lang);
 alter table reader_source_page add foreign key (id_reader) references reader(id);
