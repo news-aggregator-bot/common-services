@@ -20,7 +20,7 @@ public class SourcePageDto {
 
     private List<ContentBlockDto> blocks = new ArrayList<>();
 
-    public void addTag(ContentBlockDto block) {
+    public void addBlock(ContentBlockDto block) {
         blocks.add(block);
     }
 }

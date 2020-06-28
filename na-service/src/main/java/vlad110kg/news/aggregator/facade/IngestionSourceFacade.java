@@ -21,6 +21,7 @@ import vlad110kg.news.aggregator.service.ISourcePageService;
 import vlad110kg.news.aggregator.service.ISourceService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -45,11 +46,7 @@ public class IngestionSourceFacade {
     private ICategoryService categoryService;
 
     public Source ingest(SourceDto srcDto) {
-        Source source = sourceService.findByName(srcDto.getName()).orElseGet(() -> {
-            Source newSrc = new Source();
-            newSrc.setName(srcDto.getName());
-            return newSrc;
-        });
+        Source source = getSource(srcDto);
 
         for (SourcePageDto pageDto : srcDto.getPages()) {
             SourcePage srcPage = sourcePageService.findByUrl(pageDto.getUrl()).orElseGet(() -> {
@@ -66,13 +63,28 @@ public class IngestionSourceFacade {
                 .stream()
                 .map(cb -> buildContentBlock(srcPage, cb))
                 .collect(Collectors.toList());
+            if (srcPage.getContentBlocks() != null) {
+                List<ContentBlock> srcPageContentBlocks = srcPage.getContentBlocks();
+                srcPage.setContentBlocks(null);
+                contentBlockService.deleteAll(srcPageContentBlocks);
+            }
             srcPage.setContentBlocks(contentBlocks);
 
             contentBlockService.saveAll(contentBlocks);
             sourcePageService.save(srcPage);
         }
 
-        return sourceService.save(source);
+        return source;
+    }
+
+    private Source getSource(SourceDto srcDto) {
+        Optional<Source> source = sourceService.findByName(srcDto.getName());
+        if (source.isPresent()) {
+            return source.get();
+        }
+        Source newSrc = new Source();
+        newSrc.setName(srcDto.getName());
+        return sourceService.save(newSrc);
     }
 
     private ContentBlock buildContentBlock(SourcePage page, ContentBlockDto dto) {
@@ -111,7 +123,7 @@ public class IngestionSourceFacade {
     }
 
     private Category getCategory(String c) {
-        return categoryService.findByName(c)
+        return categoryService.findByName(c.trim())
             .orElseThrow(() -> new ResourceNotFoundException(c + " category not found."));
     }
 }

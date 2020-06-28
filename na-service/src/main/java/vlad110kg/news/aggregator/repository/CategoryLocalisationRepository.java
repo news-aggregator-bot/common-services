@@ -4,10 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import vlad110kg.news.aggregator.entity.CategoryLocalisation;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface CategoryLocalisationRepository extends JpaRepository<CategoryLocalisation, Long> {
 
-    Optional<CategoryLocalisation> findByValue(String value);
+    List<CategoryLocalisation> findByValue(String value);
 }

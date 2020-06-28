@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
+import static javax.persistence.CascadeType.ALL;
+
 @Data
 @Entity
 @Table(name = "source_page")
@@ -44,7 +46,7 @@ public class SourcePage extends DatedEntity {
     )
     private List<Category> categories;
 
-    @OneToMany(mappedBy = "sourcePage")
+    @OneToMany(mappedBy = "sourcePage", cascade = ALL)
     @JsonIgnore
     private List<ContentBlock> contentBlocks;
 

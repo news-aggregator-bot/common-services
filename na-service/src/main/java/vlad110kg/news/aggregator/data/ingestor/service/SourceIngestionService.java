@@ -79,12 +79,11 @@ public class SourceIngestionService implements IngestionService {
         for (int r = 1; r < rows; r++) {
             Row row = sheet.getRow(r);
             ContentBlockDto block = new ContentBlockDto();
-
             for (Map.Entry<Integer, IngestionConsumer> e : fieldMapping.entrySet()) {
                 Cell cell = row.getCell(e.getKey());
 
-                String cellValue = cell.getStringCellValue();
-                if (StringUtils.isNotBlank(cellValue)) {
+                if (cell != null && StringUtils.isNotBlank(cell.getStringCellValue())) {
+                    String cellValue = cell.getStringCellValue();
                     ContentTagDto contentTag = null;
                     Supplier<Object> entitySupplier = entityMapping.get(e.getKey());
                     if (entitySupplier != null) {
@@ -92,7 +91,6 @@ public class SourceIngestionService implements IngestionService {
 
                         if (entity instanceof SourcePageDto) {
                             srcPage = (SourcePageDto) entity;
-                            srcPage.addTag(block);
                             source.addPage(srcPage);
                         } else {
                             contentTag = (ContentTagDto) entity;
@@ -106,6 +104,9 @@ public class SourceIngestionService implements IngestionService {
                         e.getValue().consume(cellValue, contentTag);
                     }
                 }
+            }
+            if (!block.getContentTags().isEmpty()) {
+                srcPage.addBlock(block);
             }
         }
     }

@@ -35,8 +35,8 @@ public class LocalisationIngestionService implements IngestionService {
             Map<Integer, String> languages = new HashMap<>();
             while (true) {
                 Cell cell = initial.getCell(cellNum);
-                String cellValue = cell.getStringCellValue();
-                if (StringUtils.isNotBlank(cellValue)) {
+                if (cell != null) {
+                    String cellValue = cell.getStringCellValue();
                     languages.put(cellNum, cellValue);
                     cellNum++;
                 } else {
@@ -47,21 +47,18 @@ public class LocalisationIngestionService implements IngestionService {
             List<CategoryLocalisationDto> localisations = new ArrayList<>();
             for (int r = 1; r < rows; r++) {
                 Row row = sheet.getRow(r);
-                CategoryLocalisationDto categoryLocalisation = new CategoryLocalisationDto();
-
-                for (int c = 0; c < cellNum; c++) {
+                String category = row.getCell(0).getStringCellValue();
+                for (int c = 1; c < cellNum; c++) {
+                    CategoryLocalisationDto categoryLocalisation = new CategoryLocalisationDto();
+                    localisations.add(categoryLocalisation);
                     String cellValue = row.getCell(c).getStringCellValue();
                     if (StringUtils.isNotBlank(cellValue)) {
                         String lang = languages.get(c);
-                        if (StringUtils.isBlank(lang)) {
-                            categoryLocalisation.setCategory(cellValue);
-                        } else {
-                            categoryLocalisation.setValue(cellValue);
-                            categoryLocalisation.setLanguage(lang);
-                        }
+                        categoryLocalisation.setCategory(category);
+                        categoryLocalisation.setValue(cellValue);
+                        categoryLocalisation.setLanguage(lang);
                     }
                 }
-                localisations.add(categoryLocalisation);
             }
             ingestLocalisations.ingest(localisations);
         } catch (Exception ioe) {

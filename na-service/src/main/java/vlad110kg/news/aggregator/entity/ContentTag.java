@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "content_tag")
 @EqualsAndHashCode(callSuper = true)
-public class ContentTag extends DatedEntity {
+public class ContentTag extends IdEntity {
 
     @Enumerated(EnumType.STRING)
     private ContentTagType type;

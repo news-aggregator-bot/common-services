@@ -67,7 +67,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Optional<CategoryLocalisation> findLocalisationByValue(String value) {
+    public List<CategoryLocalisation> findLocalisationByValue(String value) {
         return localisationRepository.findByValue(value);
     }
 }

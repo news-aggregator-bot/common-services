@@ -28,5 +28,5 @@ public interface ICategoryService {
 
     List<CategoryLocalisation> saveAllLocalisations(Collection<CategoryLocalisation> categories);
 
-    Optional<CategoryLocalisation> findLocalisationByValue(String value);
+    List<CategoryLocalisation> findLocalisationByValue(String value);
 }

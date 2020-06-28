@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface IReaderService {
 
-    Reader create(Reader reader);
+    Reader save(Reader reader);
 
     Optional<Reader> find(long chatId);
 

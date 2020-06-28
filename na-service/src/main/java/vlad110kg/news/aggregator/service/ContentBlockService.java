@@ -6,6 +6,7 @@ import vlad110kg.news.aggregator.entity.ContentBlock;
 import vlad110kg.news.aggregator.entity.SourcePage;
 import vlad110kg.news.aggregator.repository.ContentBlockRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,5 +44,10 @@ public class ContentBlockService implements IContentBlockService {
     @Override
     public void delete(Long id) {
         findById(id).ifPresent(b -> repository.delete(b));
+    }
+
+    @Override
+    public void deleteAll(Collection<ContentBlock> blocks) {
+        repository.deleteAll(blocks);
     }
 }

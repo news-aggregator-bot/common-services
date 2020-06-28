@@ -13,7 +13,11 @@ public class RegisterReaderDto {
     @NotBlank
     private String username;
     @NotBlank
-    private String name;
+    @JsonProperty("first_name")
+    private String firstName;
+    @NotBlank
+    @JsonProperty("last_name")
+    private String lastName;
     @NotBlank
     private String platform;
     @NotBlank

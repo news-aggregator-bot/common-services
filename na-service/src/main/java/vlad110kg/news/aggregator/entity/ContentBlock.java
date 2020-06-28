@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(callSuper = true)
 public class ContentBlock extends IdEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_source_page")
     @JsonIgnore
     private SourcePage sourcePage;
@@ -35,10 +34,10 @@ public class ContentBlock extends IdEntity {
         joinColumns = {@JoinColumn(name = "id_block")},
         inverseJoinColumns = {@JoinColumn(name = "id_tag")}
     )
-    @JsonIgnore
     private List<ContentTag> tags;
 
     @Transient
+    @JsonIgnore
     private Map<ContentTagType, ContentTag> typeMap;
 
     public ContentTag findByType(ContentTagType type) {

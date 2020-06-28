@@ -28,13 +28,17 @@ public class IngestionCategoryLocalisationFacade {
                     .orElseThrow(() -> new ResourceNotFoundException(cl.getCategory() + " category not found."));
                 Language language = languageService.find(cl.getLanguage())
                     .orElseThrow(() -> new ResourceNotFoundException(cl.getLanguage() + " language not found."));
-                return categoryService.findLocalisationByValue(cl.getValue()).orElseGet(() -> {
-                    CategoryLocalisation localisation = new CategoryLocalisation();
-                    localisation.setValue(cl.getValue());
-                    localisation.setCategory(category);
-                    localisation.setLanguage(language);
-                    return localisation;
-                });
+                return categoryService.findLocalisationByValue(cl.getValue())
+                    .stream()
+                    .filter(value -> value.getCategory().equals(category) && value.getLanguage().equals(language))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        CategoryLocalisation localisation = new CategoryLocalisation();
+                        localisation.setValue(cl.getValue());
+                        localisation.setCategory(category);
+                        localisation.setLanguage(language);
+                        return localisation;
+                    });
             }
         ).collect(Collectors.toList());
         return categoryService.saveAllLocalisations(categories);

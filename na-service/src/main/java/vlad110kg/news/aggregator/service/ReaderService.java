@@ -14,9 +14,10 @@ public class ReaderService implements IReaderService {
     private ReaderRepository readerRepository;
 
     @Override
-    public Reader create(Reader reader) {
-        reader.setStatus(Reader.Status.ENABLED);
-        return readerRepository.save(reader);
+    public Reader save(Reader reader) {
+        Reader repoReader = find(reader.getChatId()).orElse(reader);
+        repoReader.setStatus(Reader.Status.ENABLED);
+        return readerRepository.save(repoReader);
     }
 
     @Override

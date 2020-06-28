@@ -37,7 +37,7 @@ public class ReaderController {
         Reader reader = modelMapper.map(dto, Reader.class);
         reader.setPlatform(platform);
         reader.setPrimaryLanguage(language);
-        return readerService.create(reader);
+        return readerService.save(reader);
     }
 
     @PutMapping("/reader/{chatId}/enable")
