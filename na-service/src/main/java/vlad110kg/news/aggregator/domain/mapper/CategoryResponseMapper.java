@@ -1,7 +1,7 @@
 package vlad110kg.news.aggregator.domain.mapper;
 
 import org.springframework.stereotype.Component;
-import vlad110kg.news.aggregator.domain.dto.response.CategoryResponse;
+import vlad110kg.news.aggregator.domain.response.CategoryResponse;
 import vlad110kg.news.aggregator.entity.Category;
 import vlad110kg.news.aggregator.entity.CategoryLocalisation;
 import vlad110kg.news.aggregator.entity.Language;
@@ -18,7 +18,7 @@ public class CategoryResponseMapper {
             .id(c.getId())
             .name(c.getName())
             .localised(localisation.getValue())
-            .parent(toSingleResponse(c.getParent(), language))
+            .parent(toParentResponse(c.getParent(), language))
             .children(c.getSubcategories()
                 .stream()
                 .map(subC -> toSingleResponse(subC, language))
@@ -34,6 +34,19 @@ public class CategoryResponseMapper {
         return CategoryResponse.builder()
             .id(c.getId())
             .name(c.getName())
+            .localised(localisation.getValue())
+            .build();
+    }
+
+    public CategoryResponse toParentResponse(Category c, Language language) {
+        if (c == null) {
+            return null;
+        }
+        CategoryLocalisation localisation = getLocalisation(c, language);
+        return CategoryResponse.builder()
+            .id(c.getId())
+            .name(c.getName())
+            .parent(toParentResponse(c.getParent(), language))
             .localised(localisation.getValue())
             .build();
     }

@@ -1,6 +1,6 @@
 package vlad110kg.news.aggregator;
 
-import vlad110kg.news.aggregator.domain.dto.response.ErrorResponse;
+import vlad110kg.news.aggregator.domain.response.ErrorResponse;
 
 public class ErrorUtil {
 

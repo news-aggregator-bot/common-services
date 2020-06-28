@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import vlad110kg.news.aggregator.ErrorUtil;
-import vlad110kg.news.aggregator.domain.dto.request.ListCategoryRequest;
-import vlad110kg.news.aggregator.domain.dto.request.PickCategoryRequest;
-import vlad110kg.news.aggregator.domain.dto.response.CategoryResponse;
-import vlad110kg.news.aggregator.domain.dto.response.ListCategoryResponse;
-import vlad110kg.news.aggregator.domain.dto.response.PickCategoryResponse;
 import vlad110kg.news.aggregator.domain.mapper.CategoryResponseMapper;
+import vlad110kg.news.aggregator.domain.request.ListCategoryRequest;
+import vlad110kg.news.aggregator.domain.request.PickCategoryRequest;
+import vlad110kg.news.aggregator.domain.response.CategoryResponse;
+import vlad110kg.news.aggregator.domain.response.ListCategoryResponse;
+import vlad110kg.news.aggregator.domain.response.PickCategoryResponse;
 import vlad110kg.news.aggregator.entity.Category;
 import vlad110kg.news.aggregator.entity.Reader;
 import vlad110kg.news.aggregator.exception.ResourceNotFoundException;
@@ -78,10 +78,10 @@ public class CategoryFacade {
         if (category == null) {
             return PickCategoryResponse.error(ErrorUtil.categoryNotFound());
         }
-        reader.setSourcePages(sourcePageService.findByCategory(category));
+        reader.addSourcePages(sourcePageService.findByCategory(category));
         readerService.save(reader);
         return PickCategoryResponse.builder()
-            .category(categoryResponseMapper.toSingleResponse(category, reader.getPrimaryLanguage()))
+            .category(categoryResponseMapper.toFullResponse(category, reader.getPrimaryLanguage()))
             .language(reader.getPrimaryLanguage().getLang())
             .build();
     }

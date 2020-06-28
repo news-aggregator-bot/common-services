@@ -1,4 +1,4 @@
-package vlad110kg.news.aggregator.domain.dto.request;
+package vlad110kg.news.aggregator.domain.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

@@ -67,6 +67,14 @@ public class Reader extends DatedEntity {
     )
     private Set<Language> languages;
 
+    public void addSourcePages(List<SourcePage> sourcePages) {
+        if (this.sourcePages == null || this.sourcePages.isEmpty()) {
+            this.sourcePages = sourcePages;
+        } else {
+            this.sourcePages.addAll(sourcePages);
+        }
+    }
+
     public enum Status {
         ENABLED, DISABLED
     }

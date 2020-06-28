@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import vlad110kg.news.aggregator.domain.dto.request.RegisterReaderRequest;
+import vlad110kg.news.aggregator.domain.request.RegisterReaderRequest;
 import vlad110kg.news.aggregator.entity.Language;
 import vlad110kg.news.aggregator.entity.Platform;
 import vlad110kg.news.aggregator.entity.Reader;

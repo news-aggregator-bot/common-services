@@ -14,7 +14,7 @@ public interface SourcePageRepository extends JpaRepository<SourcePage, Long> {
 
     List<SourcePage> findAllBySource(Source source);
 
-    List<SourcePage> findAllByCategory(Category category);
+    List<SourcePage> findAllByCategories(Category category);
 
     Optional<SourcePage> findByUrl(String url);
 }

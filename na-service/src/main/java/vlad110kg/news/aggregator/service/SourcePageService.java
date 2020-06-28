@@ -29,7 +29,7 @@ public class SourcePageService implements ISourcePageService {
 
     @Override
     public List<SourcePage> findByCategory(Category category) {
-        return repository.findAllByCategory(category);
+        return repository.findAllByCategories(category);
     }
 
     @Override

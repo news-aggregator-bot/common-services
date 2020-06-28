@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import vlad110kg.news.aggregator.domain.dto.request.ListCategoryRequest;
-import vlad110kg.news.aggregator.domain.dto.request.PickCategoryRequest;
-import vlad110kg.news.aggregator.domain.dto.response.ListCategoryResponse;
-import vlad110kg.news.aggregator.domain.dto.response.PickCategoryResponse;
+import vlad110kg.news.aggregator.domain.request.ListCategoryRequest;
+import vlad110kg.news.aggregator.domain.request.PickCategoryRequest;
+import vlad110kg.news.aggregator.domain.response.ListCategoryResponse;
+import vlad110kg.news.aggregator.domain.response.PickCategoryResponse;
 import vlad110kg.news.aggregator.facade.CategoryFacade;
 
 import java.util.Map;

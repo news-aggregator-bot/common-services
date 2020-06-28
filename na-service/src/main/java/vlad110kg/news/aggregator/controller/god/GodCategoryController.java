@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vlad110kg.news.aggregator.domain.dto.request.CategoryRequest;
+import vlad110kg.news.aggregator.domain.request.CategoryRequest;
 import vlad110kg.news.aggregator.entity.Category;
 import vlad110kg.news.aggregator.entity.CategoryLocalisation;
 import vlad110kg.news.aggregator.entity.Language;

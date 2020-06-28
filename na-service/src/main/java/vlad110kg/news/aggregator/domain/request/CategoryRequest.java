@@ -1,4 +1,4 @@
-package vlad110kg.news.aggregator.domain.dto.request;
+package vlad110kg.news.aggregator.domain.request;
 
 import lombok.Data;
 import lombok.ToString;
