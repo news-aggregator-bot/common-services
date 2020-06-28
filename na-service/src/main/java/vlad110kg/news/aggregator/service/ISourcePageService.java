@@ -1,5 +1,6 @@
 package vlad110kg.news.aggregator.service;
 
+import vlad110kg.news.aggregator.entity.Category;
 import vlad110kg.news.aggregator.entity.Source;
 import vlad110kg.news.aggregator.entity.SourcePage;
 
@@ -12,6 +13,8 @@ public interface ISourcePageService {
     List<SourcePage> findAll();
 
     List<SourcePage> findBySource(Source source);
+
+    List<SourcePage> findByCategory(Category category);
 
     Optional<SourcePage> findByUrl(String url);
 

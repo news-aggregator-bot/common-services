@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import vlad110kg.news.aggregator.domain.dto.request.RegisterReaderDto;
+import vlad110kg.news.aggregator.domain.dto.request.RegisterReaderRequest;
 import vlad110kg.news.aggregator.entity.Language;
 import vlad110kg.news.aggregator.entity.Platform;
 import vlad110kg.news.aggregator.entity.Reader;
@@ -30,7 +30,7 @@ public class ReaderController {
     private ILanguageService languageService;
 
     @PostMapping("/reader/register")
-    public Reader register(@Valid @RequestBody RegisterReaderDto dto) {
+    public Reader register(@Valid @RequestBody RegisterReaderRequest dto) {
         Language language = languageService.find(dto.getPrimaryLanguage())
             .orElseThrow(() -> new ResourceNotFoundException(dto.getPrimaryLanguage() + " language not found."));
         Platform platform = Platform.valueOf(dto.getPlatform());

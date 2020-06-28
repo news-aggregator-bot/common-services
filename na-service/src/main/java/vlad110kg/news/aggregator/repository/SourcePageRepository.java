@@ -2,6 +2,7 @@ package vlad110kg.news.aggregator.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import vlad110kg.news.aggregator.entity.Category;
 import vlad110kg.news.aggregator.entity.Source;
 import vlad110kg.news.aggregator.entity.SourcePage;
 
@@ -12,6 +13,8 @@ import java.util.Optional;
 public interface SourcePageRepository extends JpaRepository<SourcePage, Long> {
 
     List<SourcePage> findAllBySource(Source source);
+
+    List<SourcePage> findAllByCategory(Category category);
 
     Optional<SourcePage> findByUrl(String url);
 }

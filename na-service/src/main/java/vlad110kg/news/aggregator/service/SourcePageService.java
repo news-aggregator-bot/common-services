@@ -2,6 +2,7 @@ package vlad110kg.news.aggregator.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vlad110kg.news.aggregator.entity.Category;
 import vlad110kg.news.aggregator.entity.Source;
 import vlad110kg.news.aggregator.entity.SourcePage;
 import vlad110kg.news.aggregator.repository.SourcePageRepository;
@@ -24,6 +25,11 @@ public class SourcePageService implements ISourcePageService {
     @Override
     public List<SourcePage> findBySource(Source source) {
         return repository.findAllBySource(source);
+    }
+
+    @Override
+    public List<SourcePage> findByCategory(Category category) {
+        return repository.findAllByCategory(category);
     }
 
     @Override

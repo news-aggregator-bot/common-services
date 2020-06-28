@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class RegisterReaderDto {
+public class RegisterReaderRequest {
 
     @JsonProperty("chat_id")
     private long chatId;

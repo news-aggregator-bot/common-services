@@ -3,19 +3,22 @@ package vlad110kg.news.aggregator.facade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import vlad110kg.news.aggregator.ErrorUtil;
 import vlad110kg.news.aggregator.domain.dto.request.ListCategoryRequest;
+import vlad110kg.news.aggregator.domain.dto.request.PickCategoryRequest;
 import vlad110kg.news.aggregator.domain.dto.response.CategoryResponse;
 import vlad110kg.news.aggregator.domain.dto.response.ListCategoryResponse;
+import vlad110kg.news.aggregator.domain.dto.response.PickCategoryResponse;
+import vlad110kg.news.aggregator.domain.mapper.CategoryResponseMapper;
 import vlad110kg.news.aggregator.entity.Category;
-import vlad110kg.news.aggregator.entity.CategoryLocalisation;
 import vlad110kg.news.aggregator.entity.Reader;
 import vlad110kg.news.aggregator.exception.ResourceNotFoundException;
 import vlad110kg.news.aggregator.service.ICategoryService;
 import vlad110kg.news.aggregator.service.ILanguageService;
 import vlad110kg.news.aggregator.service.IReaderService;
+import vlad110kg.news.aggregator.service.ISourcePageService;
 
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Component
@@ -30,12 +33,16 @@ public class CategoryFacade {
     @Autowired
     private ILanguageService languageService;
 
+    @Autowired
+    private ISourcePageService sourcePageService;
+
+    @Autowired
+    private CategoryResponseMapper categoryResponseMapper;
+
     public ListCategoryResponse listAll(ListCategoryRequest request) {
         Reader reader = readerService.find(request.getChatId()).orElse(null);
         if (reader == null) {
-            return ListCategoryResponse.builder()
-                .error("Reader with chat id " + request.getChatId() + " not found")
-                .build();
+            return ListCategoryResponse.error(ErrorUtil.readerNotFound());
         }
         PageRequest req = PageRequest.of(request.getPage() - 1, request.getSize());
         return getListCategoryResponse(
@@ -48,15 +55,11 @@ public class CategoryFacade {
     public ListCategoryResponse listSub(ListCategoryRequest request) {
         Category parent = categoryService.find(request.getParentId()).orElse(null);
         if (parent == null) {
-            return ListCategoryResponse.builder()
-                .error("Parent category " + request.getParentId() + " not found")
-                .build();
+            return ListCategoryResponse.error(ErrorUtil.categoryNotFound());
         }
         Reader reader = readerService.find(request.getChatId()).orElse(null);
         if (reader == null) {
-            return ListCategoryResponse.builder()
-                .error("Reader with chat id " + request.getChatId() + " not found")
-                .build();
+            return ListCategoryResponse.error(ErrorUtil.readerNotFound());
         }
         PageRequest req = PageRequest.of(request.getPage() - 1, request.getSize());
         return getListCategoryResponse(
@@ -66,11 +69,28 @@ public class CategoryFacade {
         );
     }
 
+    public PickCategoryResponse pick(PickCategoryRequest request) {
+        Reader reader = readerService.find(request.getChatId()).orElse(null);
+        if (reader == null) {
+            return PickCategoryResponse.error(ErrorUtil.readerNotFound());
+        }
+        Category category = categoryService.find(request.getCategoryId()).orElse(null);
+        if (category == null) {
+            return PickCategoryResponse.error(ErrorUtil.categoryNotFound());
+        }
+        reader.setSourcePages(sourcePageService.findByCategory(category));
+        readerService.save(reader);
+        return PickCategoryResponse.builder()
+            .category(categoryResponseMapper.toSingleResponse(category, reader.getPrimaryLanguage()))
+            .language(reader.getPrimaryLanguage().getLang())
+            .build();
+    }
+
     private ListCategoryResponse getListCategoryResponse(Reader reader, List<Category> categories, long totalAmount) {
         try {
             List<CategoryResponse> responses = categories
                 .stream()
-                .map(c -> toResponse(c, reader))
+                .map(c -> categoryResponseMapper.toFullResponse(c, reader.getPrimaryLanguage()))
                 .collect(Collectors.toList());
 
             return ListCategoryResponse.builder()
@@ -79,45 +99,9 @@ public class CategoryFacade {
                 .totalAmount(totalAmount)
                 .build();
         } catch (ResourceNotFoundException e) {
-            return ListCategoryResponse.builder().error(e.getMessage()).build();
+            return ListCategoryResponse.error(ErrorUtil.languageNotFound());
         }
     }
 
-    private CategoryResponse toResponse(Category c, Reader reader) {
-        CategoryLocalisation localisation = getLocalisation(c, reader);
-        return CategoryResponse.builder()
-            .id(c.getId())
-            .name(c.getName())
-            .localised(localisation.getValue())
-            .parent(singleResponse(c.getParent(), reader))
-            .children(c.getSubcategories()
-                .stream()
-                .map(subC -> singleResponse(subC, reader))
-                .collect(Collectors.toList()))
-            .build();
-    }
 
-    private CategoryResponse singleResponse(Category c, Reader reader) {
-        if (c == null) {
-            return null;
-        }
-        CategoryLocalisation localisation = getLocalisation(c, reader);
-        return CategoryResponse.builder()
-            .id(c.getId())
-            .name(c.getName())
-            .localised(localisation.getValue())
-            .build();
-    }
-
-    private CategoryLocalisation getLocalisation(Category c, Reader reader) {
-        return c.getLocalisations().stream()
-            .filter(cl -> cl.getLanguage().equals(reader.getPrimaryLanguage()))
-            .findFirst()
-            .orElseThrow(notFoundLang(c, reader.getPrimaryLanguage().getLang()));
-    }
-
-    private Supplier<ResourceNotFoundException> notFoundLang(Category c, String language) {
-        return () -> new ResourceNotFoundException("Language " + language + " for category " + c.getName() + " not " +
-            "found");
-    }
 }

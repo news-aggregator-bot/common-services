@@ -14,5 +14,9 @@ public class ListCategoryResponse {
     @JsonProperty("total_amount")
     private long totalAmount;
     private String language;
-    private String error;
+    private ErrorResponse error;
+
+    public static ListCategoryResponse error(ErrorResponse error) {
+        return ListCategoryResponse.builder().error(error).build();
+    }
 }
