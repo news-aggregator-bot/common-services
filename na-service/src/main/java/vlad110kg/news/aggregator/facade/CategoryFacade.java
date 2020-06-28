@@ -38,7 +38,11 @@ public class CategoryFacade {
                 .build();
         }
         PageRequest req = PageRequest.of(request.getPage() - 1, request.getSize());
-        return getListCategoryResponse(reader, categoryService.findAll(req));
+        return getListCategoryResponse(
+            reader,
+            categoryService.findTopCategories(req),
+            categoryService.countTopCategories()
+        );
     }
 
     public ListCategoryResponse listSub(ListCategoryRequest request) {
@@ -55,10 +59,14 @@ public class CategoryFacade {
                 .build();
         }
         PageRequest req = PageRequest.of(request.getPage() - 1, request.getSize());
-        return getListCategoryResponse(reader, categoryService.findByParent(parent, req));
+        return getListCategoryResponse(
+            reader,
+            categoryService.findByParent(parent, req),
+            categoryService.countByParent(parent)
+        );
     }
 
-    private ListCategoryResponse getListCategoryResponse(Reader reader, List<Category> categories) {
+    private ListCategoryResponse getListCategoryResponse(Reader reader, List<Category> categories, long totalAmount) {
         try {
             List<CategoryResponse> responses = categories
                 .stream()
@@ -68,7 +76,7 @@ public class CategoryFacade {
             return ListCategoryResponse.builder()
                 .categories(responses)
                 .language(reader.getPrimaryLanguage().getLang())
-                .totalAmount(categoryService.countAll())
+                .totalAmount(totalAmount)
                 .build();
         } catch (ResourceNotFoundException e) {
             return ListCategoryResponse.builder().error(e.getMessage()).build();
@@ -76,20 +84,40 @@ public class CategoryFacade {
     }
 
     private CategoryResponse toResponse(Category c, Reader reader) {
-        CategoryLocalisation localisation = c.getLocalisations().stream()
-            .filter(cl -> cl.getLanguage().equals(reader.getPrimaryLanguage()))
-            .findFirst()
-            .orElseThrow(notFoundLang(c, reader));
+        CategoryLocalisation localisation = getLocalisation(c, reader);
         return CategoryResponse.builder()
             .id(c.getId())
             .name(c.getName())
             .localised(localisation.getValue())
-            .parent(toResponse(c.getParent(), reader))
-            .children(c.getSubcategories().stream().map(subC -> toResponse(subC, reader)).collect(Collectors.toList()))
+            .parent(singleResponse(c.getParent(), reader))
+            .children(c.getSubcategories()
+                .stream()
+                .map(subC -> singleResponse(subC, reader))
+                .collect(Collectors.toList()))
             .build();
     }
 
-    private Supplier<ResourceNotFoundException> notFoundLang(Category c, Reader reader) {
-        return () -> new ResourceNotFoundException("Language " + reader.getPrimaryLanguage() + " for category " + c.getName() + " not found");
+    private CategoryResponse singleResponse(Category c, Reader reader) {
+        if (c == null) {
+            return null;
+        }
+        CategoryLocalisation localisation = getLocalisation(c, reader);
+        return CategoryResponse.builder()
+            .id(c.getId())
+            .name(c.getName())
+            .localised(localisation.getValue())
+            .build();
+    }
+
+    private CategoryLocalisation getLocalisation(Category c, Reader reader) {
+        return c.getLocalisations().stream()
+            .filter(cl -> cl.getLanguage().equals(reader.getPrimaryLanguage()))
+            .findFirst()
+            .orElseThrow(notFoundLang(c, reader.getPrimaryLanguage().getLang()));
+    }
+
+    private Supplier<ResourceNotFoundException> notFoundLang(Category c, String language) {
+        return () -> new ResourceNotFoundException("Language " + language + " for category " + c.getName() + " not " +
+            "found");
     }
 }

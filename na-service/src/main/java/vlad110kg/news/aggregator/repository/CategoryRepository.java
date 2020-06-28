@@ -15,4 +15,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, JpaSp
     Optional<Category> findByName(String name);
 
     List<Category> findAllByParent(Category parent, Pageable pageable);
+
+    List<Category> findAllByParentIsNull(Pageable pageable);
+
+    long countByParentIsNull();
+
+    long countByParent(Category parent);
 }
