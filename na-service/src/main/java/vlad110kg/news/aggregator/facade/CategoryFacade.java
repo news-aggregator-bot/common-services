@@ -1,5 +1,6 @@
 package vlad110kg.news.aggregator.facade;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class CategoryFacade {
 
     @Autowired
@@ -42,6 +44,7 @@ public class CategoryFacade {
     public ListCategoryResponse listAll(ListCategoryRequest request) {
         Reader reader = readerService.find(request.getChatId()).orElse(null);
         if (reader == null) {
+            log.warn("list:category:reader {} not found", request.getChatId());
             return ListCategoryResponse.error(ErrorUtil.readerNotFound());
         }
         PageRequest req = PageRequest.of(request.getPage() - 1, request.getSize());
@@ -55,10 +58,12 @@ public class CategoryFacade {
     public ListCategoryResponse listSub(ListCategoryRequest request) {
         Category parent = categoryService.find(request.getParentId()).orElse(null);
         if (parent == null) {
+            log.warn("list:subcategory:parent category {} not found", request.getParentId());
             return ListCategoryResponse.error(ErrorUtil.categoryNotFound());
         }
         Reader reader = readerService.find(request.getChatId()).orElse(null);
         if (reader == null) {
+            log.warn("list:subcategory:reader {} not found", request.getChatId());
             return ListCategoryResponse.error(ErrorUtil.readerNotFound());
         }
         PageRequest req = PageRequest.of(request.getPage() - 1, request.getSize());
@@ -72,10 +77,12 @@ public class CategoryFacade {
     public PickCategoryResponse pick(PickCategoryRequest request) {
         Reader reader = readerService.find(request.getChatId()).orElse(null);
         if (reader == null) {
+            log.warn("pick:category:reader {} not found", request.getChatId());
             return PickCategoryResponse.error(ErrorUtil.readerNotFound());
         }
         Category category = categoryService.find(request.getCategoryId()).orElse(null);
         if (category == null) {
+            log.warn("pick:category:category {} not found", request.getCategoryId());
             return PickCategoryResponse.error(ErrorUtil.categoryNotFound());
         }
         reader.addSourcePages(sourcePageService.findByCategory(category));

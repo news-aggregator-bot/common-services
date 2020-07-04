@@ -2,6 +2,7 @@ package vlad110kg.news.aggregator.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vlad110kg.news.aggregator.entity.Language;
 import vlad110kg.news.aggregator.repository.LanguageRepository;
@@ -18,6 +19,11 @@ public class LanguageService implements ILanguageService {
     private LanguageRepository repository;
 
     @Override
+    public List<Language> listAll(Pageable pageable) {
+        return repository.findAll(pageable).toList();
+    }
+
+    @Override
     public Language save(Language language) {
         return repository.save(language);
     }
@@ -30,5 +36,10 @@ public class LanguageService implements ILanguageService {
     @Override
     public Optional<Language> find(String name) {
         return repository.findById(name);
+    }
+
+    @Override
+    public long countAll() {
+        return repository.count();
     }
 }
