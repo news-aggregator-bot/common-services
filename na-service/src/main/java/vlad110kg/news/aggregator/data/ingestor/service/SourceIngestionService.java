@@ -41,15 +41,15 @@ public class SourceIngestionService implements IngestionService {
 
     private final Map<Integer, IngestionConsumer> fieldMapping =
         ImmutableMap.<Integer, IngestionConsumer>builder()
-            .put(0, (v, o) -> ((SourcePageDto) o).setName(v))
-            .put(1, (v, o) -> ((SourcePageDto) o).setUrl(v))
+            .put(0, (v, o) -> ((SourcePageDto) o).setName(v.trim()))
+            .put(1, (v, o) -> ((SourcePageDto) o).setUrl(v.trim()))
             .put(2, (v, o) -> ((SourcePageDto) o).setCategories(Arrays.asList(v.split(","))))
-            .put(3, (v, o) -> ((SourcePageDto) o).setLanguage(v))
-            .put(4, (v, o) -> ((ContentTagDto) o).setValue(v))
-            .put(5, (v, o) -> ((ContentTagDto) o).setValue(v))
-            .put(6, (v, o) -> ((ContentTagDto) o).setValue(v))
-            .put(7, (v, o) -> ((ContentTagDto) o).setValue(v))
-            .put(8, (v, o) -> ((ContentTagDto) o).setValue(v))
+            .put(3, (v, o) -> ((SourcePageDto) o).setLanguage(v.trim()))
+            .put(4, (v, o) -> ((ContentTagDto) o).setValue(v.trim()))
+            .put(5, (v, o) -> ((ContentTagDto) o).setValue(v.trim()))
+            .put(6, (v, o) -> ((ContentTagDto) o).setValue(v.trim()))
+            .put(7, (v, o) -> ((ContentTagDto) o).setValue(v.trim()))
+            .put(8, (v, o) -> ((ContentTagDto) o).setValue(v.trim()))
             .build();
 
     @Autowired

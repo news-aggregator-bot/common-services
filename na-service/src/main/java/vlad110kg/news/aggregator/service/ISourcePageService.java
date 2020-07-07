@@ -1,5 +1,6 @@
 package vlad110kg.news.aggregator.service;
 
+import org.springframework.data.domain.Pageable;
 import vlad110kg.news.aggregator.entity.Category;
 import vlad110kg.news.aggregator.entity.Source;
 import vlad110kg.news.aggregator.entity.SourcePage;
@@ -16,11 +17,15 @@ public interface ISourcePageService {
 
     List<SourcePage> findByCategory(Category category);
 
+    Optional<SourcePage> findFirst(Pageable pageable);
+
     Optional<SourcePage> findByUrl(String url);
 
     SourcePage save(SourcePage page);
 
     Collection<SourcePage> save(Collection<SourcePage> pages);
+
+    long countAll();
 
     void delete(long id);
 }

@@ -7,7 +7,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.jsoup.select.Evaluator;
-import org.jsoup.select.Evaluator.Class;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -42,19 +41,20 @@ public class JsoupWebContentParser implements WebContentParser {
         ContentTag authorTag = block.findByType(ContentTagType.AUTHOR);
 
         if (mainTag != null) {
-            Elements mainClassElems = doc.select(classTag(mainTag.getValue()));
+            Elements mainClassElems = doc.select(classTagStarts(mainTag.getValue()));
 
             Builder<PageParsedData> datas = ImmutableList.builder();
             for (Element wrapper : mainClassElems) {
 
-                Element titleEl = wrapper.selectFirst(classTag(titleTag.getValue()));
+                Element titleEl = wrapper.selectFirst(classTagStarts(titleTag.getValue()));
                 PageParsedData.PageParsedDataBuilder dataBuilder = PageParsedData.builder();
                 dataBuilder.title(titleEl.text());
                 if (linkTag == null) {
                     Element a = titleEl.selectFirst(new Evaluator.Tag("a"));
                     dataBuilder.link(a.attr("href"));
                 } else {
-                    dataBuilder.link(titleEl.attr("href"));
+                    Element linkEl = wrapper.selectFirst(classTagStarts(linkTag.getValue()));
+                    dataBuilder.link(linkEl.attr("href"));
                 }
                 dataBuilder.description(getDescription(descriptionTag, wrapper))
                     .author(getAuthor(authorTag, wrapper));
@@ -68,20 +68,25 @@ public class JsoupWebContentParser implements WebContentParser {
 
     private String getDescription(ContentTag contentTag, Element wrapper) {
         if (contentTag != null) {
-            return wrapper.selectFirst(classTag(contentTag.getValue())).text();
+            return wrapper.selectFirst(classTagStarts(contentTag.getValue())).text();
         }
         return null;
     }
 
     private String getAuthor(ContentTag authorTag, Element wrapper) {
         if (authorTag != null) {
-            return wrapper.selectFirst(classTag(authorTag.getValue())).text();
+            Element element = wrapper.selectFirst(classTag(authorTag.getValue()));
+            return element == null ? null : element.text();
         }
         return null;
     }
 
-    private Class classTag(String name) {
-        return new Class(name);
+    private Evaluator.Class classTag(String name) {
+        return new Evaluator.Class(name);
+    }
+
+    private Evaluator.AttributeWithValueContaining classTagStarts(String name) {
+        return new Evaluator.AttributeWithValueContaining("class", name + " ");
     }
 
 }

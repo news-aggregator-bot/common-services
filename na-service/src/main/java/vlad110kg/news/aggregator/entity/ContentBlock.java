@@ -3,6 +3,7 @@ package vlad110kg.news.aggregator.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,11 +22,13 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "content_block")
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public class ContentBlock extends IdEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_source_page")
     @JsonIgnore
+    @ToString.Exclude
     private SourcePage sourcePage;
 
     @ManyToMany
@@ -34,10 +37,12 @@ public class ContentBlock extends IdEntity {
         joinColumns = {@JoinColumn(name = "id_block")},
         inverseJoinColumns = {@JoinColumn(name = "id_tag")}
     )
+    @EqualsAndHashCode.Exclude
     private List<ContentTag> tags;
 
     @Transient
     @JsonIgnore
+    @EqualsAndHashCode.Exclude
     private Map<ContentTagType, ContentTag> typeMap;
 
     public ContentTag findByType(ContentTagType type) {

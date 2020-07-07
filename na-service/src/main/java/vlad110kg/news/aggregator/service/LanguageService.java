@@ -25,11 +25,13 @@ public class LanguageService implements ILanguageService {
 
     @Override
     public Language save(Language language) {
+        log.info("language:save:{}", language);
         return repository.save(language);
     }
 
     @Override
     public List<Language> saveAll(Collection<Language> languages) {
+        log.info("language:save:{}", languages);
         return repository.saveAll(languages);
     }
 

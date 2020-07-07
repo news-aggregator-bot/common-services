@@ -1,9 +1,9 @@
 package vlad110kg.news.aggregator.service;
 
+import vlad110kg.news.aggregator.entity.Source;
+
 import java.util.List;
 import java.util.Optional;
-
-import vlad110kg.news.aggregator.entity.Source;
 
 public interface ISourceService {
 

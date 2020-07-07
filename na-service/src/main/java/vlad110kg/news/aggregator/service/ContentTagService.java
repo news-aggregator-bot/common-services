@@ -29,7 +29,7 @@ public class ContentTagService implements IContentTagService {
     }
 
     @Override
-    public Optional<ContentTag> findByValue(String value) {
+    public List<ContentTag> findByValue(String value) {
         return repository.findByValue(value);
     }
 

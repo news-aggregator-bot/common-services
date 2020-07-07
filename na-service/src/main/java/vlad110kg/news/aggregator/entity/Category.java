@@ -3,6 +3,7 @@ package vlad110kg.news.aggregator.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,6 +19,7 @@ import java.util.List;
 @Entity
 @Table(name = "category")
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public class Category extends IdEntity {
 
     @Column(nullable = false)
@@ -29,9 +31,13 @@ public class Category extends IdEntity {
     private Category parent;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Category> subcategories;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<CategoryLocalisation> localisations;
 }

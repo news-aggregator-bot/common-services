@@ -12,7 +12,7 @@ public interface IContentTagService {
 
     List<ContentTag> findByIds(Collection<Long> ids);
 
-    Optional<ContentTag> findByValue(String value);
+    List<ContentTag> findByValue(String value);
 
     Optional<ContentTag> findById(Long id);
 

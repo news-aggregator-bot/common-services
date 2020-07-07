@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import vlad110kg.news.aggregator.domain.NewsSyncResult;
 import vlad110kg.news.aggregator.service.INewsService;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/god")
 public class GodNewsController {
@@ -20,10 +18,5 @@ public class GodNewsController {
     @PutMapping("/news/sync/{name}")
     public NewsSyncResult sync(@PathVariable String name) {
         return newsService.sync(name);
-    }
-
-    @PutMapping("/news/sync")
-    public List<NewsSyncResult> syncAll() {
-        return newsService.syncAll();
     }
 }

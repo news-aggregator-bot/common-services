@@ -3,6 +3,7 @@ package vlad110kg.news.aggregator.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +22,7 @@ import static javax.persistence.CascadeType.ALL;
 @Entity
 @Table(name = "source_page")
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public class SourcePage extends DatedEntity {
 
     @Column(nullable = false)
@@ -36,6 +38,7 @@ public class SourcePage extends DatedEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_source")
     @JsonIgnore
+    @ToString.Exclude
     private Source source;
 
     @ManyToMany
@@ -45,6 +48,14 @@ public class SourcePage extends DatedEntity {
         inverseJoinColumns = {@JoinColumn(name = "id_category")}
     )
     private List<Category> categories;
+
+    @ManyToMany
+    @JoinTable(
+        name = "reader_source_page",
+        joinColumns = {@JoinColumn(name = "id_source_page")},
+        inverseJoinColumns = {@JoinColumn(name = "id_reader")}
+    )
+    private List<Reader> readers;
 
     @OneToMany(mappedBy = "sourcePage", cascade = ALL)
     @JsonIgnore

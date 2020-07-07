@@ -1,9 +1,12 @@
 package vlad110kg.news.aggregator.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +25,7 @@ import java.util.Set;
 @Entity
 @Table(name = "reader")
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public class Reader extends DatedEntity {
 
     @JsonProperty("chat_id")
@@ -57,6 +62,9 @@ public class Reader extends DatedEntity {
         joinColumns = {@JoinColumn(name = "id_reader")},
         inverseJoinColumns = {@JoinColumn(name = "id_source_page")}
     )
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnore
     private List<SourcePage> sourcePages;
 
     @ManyToMany
@@ -65,7 +73,18 @@ public class Reader extends DatedEntity {
         joinColumns = {@JoinColumn(name = "id_reader")},
         inverseJoinColumns = {@JoinColumn(name = "language")}
     )
+    @EqualsAndHashCode.Exclude
     private Set<Language> languages;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "notify_queue",
+        joinColumns = {@JoinColumn(name = "id_reader")},
+        inverseJoinColumns = {@JoinColumn(name = "id_news_note")}
+    )
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    private Set<NewsNote> notifyQueue;
 
     public void addSourcePages(List<SourcePage> sourcePages) {
         if (this.sourcePages == null || this.sourcePages.isEmpty()) {
@@ -73,6 +92,13 @@ public class Reader extends DatedEntity {
         } else {
             this.sourcePages.addAll(sourcePages);
         }
+    }
+
+    public void addQueueNewsNote(Set<NewsNote> newsNote) {
+        if (notifyQueue == null) {
+            notifyQueue = new HashSet<>(newsNote.size());
+        }
+        notifyQueue.addAll(newsNote);
     }
 
     public enum Status {

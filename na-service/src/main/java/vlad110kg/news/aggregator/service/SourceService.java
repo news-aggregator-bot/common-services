@@ -1,15 +1,16 @@
 package vlad110kg.news.aggregator.service;
 
-import java.util.List;
-import java.util.Optional;
-
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import vlad110kg.news.aggregator.entity.Source;
 import vlad110kg.news.aggregator.repository.SourceRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
 
 @Service
+@Slf4j
 public class SourceService implements ISourceService {
 
     @Autowired
@@ -23,8 +24,9 @@ public class SourceService implements ISourceService {
     }
 
     @Override
-    public Source save(Source name) {
-        return repository.save(name);
+    public Source save(Source src) {
+        log.info("source:save:{}", src);
+        return repository.save(src);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package vlad110kg.news.aggregator.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vlad110kg.news.aggregator.entity.ContentBlock;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ContentBlockService implements IContentBlockService {
 
     @Autowired
@@ -33,11 +35,13 @@ public class ContentBlockService implements IContentBlockService {
 
     @Override
     public ContentBlock save(ContentBlock block) {
+        log.info("contentblock:save:{}", block);
         return repository.save(block);
     }
 
     @Override
     public List<ContentBlock> saveAll(List<ContentBlock> blocks) {
+        log.info("contentblock:save:{}", blocks);
         return repository.saveAll(blocks);
     }
 

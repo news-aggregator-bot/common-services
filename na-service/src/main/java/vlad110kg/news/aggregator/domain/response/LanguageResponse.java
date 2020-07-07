@@ -14,6 +14,14 @@ public class LanguageResponse {
 
     private String localized;
 
+    public LanguageResponse() {}
+
+    public LanguageResponse(String lang, String name, String localized) {
+        this.lang = lang;
+        this.name = name;
+        this.localized = localized;
+    }
+
     public LanguageResponse(Language language) {
         this.lang = language.getLang();
         this.name = language.getName();

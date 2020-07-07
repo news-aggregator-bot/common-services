@@ -1,5 +1,6 @@
 package vlad110kg.news.aggregator.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class CategoryService implements ICategoryService {
 
     @Autowired
@@ -23,11 +25,13 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public Category save(Category category) {
+        log.info("category:save:{}", category);
         return repository.save(category);
     }
 
     @Override
     public List<Category> saveAll(Collection<Category> categories) {
+        log.info("category:save:{}", categories);
         return repository.saveAll(categories);
     }
 
@@ -78,6 +82,7 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public List<CategoryLocalisation> saveAllLocalisations(Collection<CategoryLocalisation> categories) {
+        log.info("categorylocalisation:save:{}", categories);
         return localisationRepository.saveAll(categories);
     }
 

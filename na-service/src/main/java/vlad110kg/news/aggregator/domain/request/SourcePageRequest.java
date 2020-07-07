@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 @Data
 @ToString
@@ -18,8 +17,4 @@ public class SourcePageRequest {
 
     @NotBlank
     private String language;
-
-    private List<String> categories;
-
-    private List<Long> contentTagIds;
 }

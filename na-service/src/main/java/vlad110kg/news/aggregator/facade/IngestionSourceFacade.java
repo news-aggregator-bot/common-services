@@ -59,19 +59,20 @@ public class IngestionSourceFacade {
             srcPage.setSource(source);
             srcPage.setLanguage(findLanguage(pageDto));
             srcPage.setCategories(findCategories(pageDto));
+            SourcePage savedSrcPage = sourcePageService.save(srcPage);
+
             List<ContentBlock> contentBlocks = pageDto.getBlocks()
                 .stream()
-                .map(cb -> buildContentBlock(srcPage, cb))
+                .map(cb -> buildContentBlock(savedSrcPage, cb))
                 .collect(Collectors.toList());
-            if (srcPage.getContentBlocks() != null) {
-                List<ContentBlock> srcPageContentBlocks = srcPage.getContentBlocks();
-                srcPage.setContentBlocks(null);
+            if (savedSrcPage.getContentBlocks() != null) {
+                List<ContentBlock> srcPageContentBlocks = savedSrcPage.getContentBlocks();
+                savedSrcPage.setContentBlocks(null);
                 contentBlockService.deleteAll(srcPageContentBlocks);
             }
-            srcPage.setContentBlocks(contentBlocks);
+            savedSrcPage.setContentBlocks(contentBlocks);
 
             contentBlockService.saveAll(contentBlocks);
-            sourcePageService.save(srcPage);
         }
 
         return source;
@@ -102,6 +103,9 @@ public class IngestionSourceFacade {
 
     private ContentTag findContentTag(ContentTagDto tag) {
         return contentTagService.findByValue(tag.getValue())
+            .stream()
+            .filter(t -> t.getType() == tag.getType())
+            .findFirst()
             .orElseGet(() -> {
                 ContentTag contentTag = new ContentTag();
                 contentTag.setType(tag.getType());
