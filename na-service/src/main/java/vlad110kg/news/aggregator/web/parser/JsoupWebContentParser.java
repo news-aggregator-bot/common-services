@@ -17,6 +17,8 @@ import vlad110kg.news.aggregator.entity.ContentTagType;
 import vlad110kg.news.aggregator.entity.SourcePage;
 import vlad110kg.news.aggregator.web.reader.WebPageReader;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,7 +34,12 @@ public class JsoupWebContentParser implements WebContentParser {
 
     @Override
     public List<PageParsedData> parse(SourcePage page, ContentBlock block) {
-        Document doc = pgRdr.read(page.getUrl());
+        Document doc;
+        try {
+            doc = pgRdr.read(page.getUrl());
+        } catch (RuntimeException e) {
+            return Collections.emptyList();
+        }
 
         ContentTag mainTag = block.findByType(ContentTagType.MAIN);
         ContentTag titleTag = block.findByType(ContentTagType.TITLE);
@@ -47,15 +54,22 @@ public class JsoupWebContentParser implements WebContentParser {
             for (Element wrapper : mainClassElems) {
 
                 Element titleEl = wrapper.selectFirst(classTagStarts(titleTag.getValue()));
+                if (titleEl == null) {
+                    continue;
+                }
                 PageParsedData.PageParsedDataBuilder dataBuilder = PageParsedData.builder();
                 dataBuilder.title(titleEl.text());
                 if (linkTag == null) {
-                    Element a = titleEl.selectFirst(new Evaluator.Tag("a"));
-                    dataBuilder.link(a.attr("href"));
+                    Element a = getLinkEl(titleEl, wrapper);
+                    if (a == null) {
+                        continue;
+                    }
+                    dataBuilder.link(getHref(page.getUrl(), a));
                 } else {
                     Element linkEl = wrapper.selectFirst(classTagStarts(linkTag.getValue()));
-                    dataBuilder.link(linkEl.attr("href"));
+                    dataBuilder.link(getHref(page.getUrl(), linkEl));
                 }
+
                 dataBuilder.description(getDescription(descriptionTag, wrapper))
                     .author(getAuthor(authorTag, wrapper));
 
@@ -64,6 +78,28 @@ public class JsoupWebContentParser implements WebContentParser {
             return datas.build();
         }
         return Collections.emptyList();
+    }
+
+    private String getHref(String pageUrl, Element a) {
+        String href = a.attr("href");
+        if (href.contains("?")) {
+            href = new StringBuilder(href).delete(href.indexOf("?"), href.length()).toString();
+        }
+        if (href.startsWith("http")) {
+            return href;
+        }
+        try {
+            URL url = new URL(pageUrl);
+            return pageUrl.replace(url.getPath(), href);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private Element getLinkEl(Element titleEl, Element wrapper) {
+        Evaluator.Tag linkTag = new Evaluator.Tag("a");
+        Element link = titleEl.selectFirst(linkTag);
+        return link == null ? wrapper.selectFirst(linkTag) : link;
     }
 
     private String getDescription(ContentTag contentTag, Element wrapper) {

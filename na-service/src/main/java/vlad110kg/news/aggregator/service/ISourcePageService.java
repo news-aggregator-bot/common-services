@@ -17,7 +17,7 @@ public interface ISourcePageService {
 
     List<SourcePage> findByCategory(Category category);
 
-    Optional<SourcePage> findFirst(Pageable pageable);
+    Optional<SourcePage> findFirstBySource(Source source, Pageable pageable);
 
     Optional<SourcePage> findByUrl(String url);
 
@@ -26,6 +26,8 @@ public interface ISourcePageService {
     Collection<SourcePage> save(Collection<SourcePage> pages);
 
     long countAll();
+
+    long countBySource(Source source);
 
     void delete(long id);
 }

@@ -36,8 +36,8 @@ public class SourcePageService implements ISourcePageService {
     }
 
     @Override
-    public Optional<SourcePage> findFirst(Pageable pageable) {
-        return repository.findAll(pageable)
+    public Optional<SourcePage> findFirstBySource(Source source, Pageable pageable) {
+        return repository.findAllBySource(source, pageable)
             .stream()
             .findFirst();
     }
@@ -62,6 +62,11 @@ public class SourcePageService implements ISourcePageService {
     @Override
     public long countAll() {
         return repository.count();
+    }
+
+    @Override
+    public long countBySource(Source source) {
+        return repository.countBySource(source);
     }
 
     @Override

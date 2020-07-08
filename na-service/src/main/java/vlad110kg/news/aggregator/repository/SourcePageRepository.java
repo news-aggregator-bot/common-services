@@ -1,5 +1,6 @@
 package vlad110kg.news.aggregator.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -15,7 +16,11 @@ public interface SourcePageRepository extends JpaRepository<SourcePage, Long>, J
 
     List<SourcePage> findAllBySource(Source source);
 
+    List<SourcePage> findAllBySource(Source source, Pageable pageable);
+
     List<SourcePage> findAllByCategories(Category category);
 
     Optional<SourcePage> findByUrl(String url);
+
+    long countBySource(Source source);
 }
