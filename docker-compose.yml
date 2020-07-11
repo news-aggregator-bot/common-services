@@ -1,15 +1,5 @@
 version: '3'
 services:
-  na-service:
-    build: na-service
-    ports:
-      - 8090:8090
-    depends_on:
-      - database
-  na-data-ingestor:
-    image: na-data-ingestor
-    ports:
-      - 8091:8091
   na-registry:
     build: na-registry
     restart: always

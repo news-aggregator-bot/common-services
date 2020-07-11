@@ -9,10 +9,9 @@
     <version>0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>na-service-common</name>
+    <name>na-common-services</name>
 
     <modules>
-        <module>na-service</module>
         <module>na-registry</module>
     </modules>
 
