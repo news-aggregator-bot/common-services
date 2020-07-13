@@ -1,7 +1,6 @@
 version: '3'
 services:
   na-registry:
-    build: na-registry
     restart: always
   na-database:
     image: mysql:5.7.30

@@ -25,11 +25,14 @@ jobs: # a collection of steps
       - run: mvn package # run the actual tests
 
       - run: |
-          echo "$GITHUB_TOKEN" | docker login $DOCKER_REPO --username $GITHUB_USER --password-stdin
-          docker run -d --name db company/proprietary-db:1.2.3
+          set -x
+          docker-compose --project-name na-common -f docker-compose.yml up --build na-registry
 
-      # build the application image
-      - run: docker build -t company/app:$CIRCLE_BRANCH .
+      - run: |
+          docker login $DOCKER_REPO -u $GITHUB_USER -p $GITHUB_TOKEN
 
-      # deploy the image
-      - run: docker push company/app:$CIRCLE_BRANCH
+      - deploy:
+          name: Build, push and deploy
+          command: |
+            docker push docker.pkg.github.com/news-aggregator-bot/artifactory/vlad110kg.na-registry:latest
+            ssh $SSH_USER@$SSH_HOST "cd na && ./update-na-registry.sh"
