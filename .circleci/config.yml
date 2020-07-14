@@ -36,7 +36,7 @@ jobs: # a collection of steps
             docker network create na-network
             docker-compose --project-name na-common -f docker-compose.yml up --build --no-start na-registry
 
-      - run: docker login $DOCKER_REPO -u $GITHUB_USER -p $GITHUB_TOKEN
+      - run: echo $GITHUB_TOKEN | docker login https://docker.pkg.github.com -u $GITHUB_USER --password-stdin
 
       - deploy:
           name: Build, push and deploy
