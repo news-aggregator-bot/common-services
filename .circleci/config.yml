@@ -1,26 +1,23 @@
 version: 2.1
 workflows:
-  jobs:
-    build-test-deploy:
-      - build:
-          context: DOCKER
-      - deploy:
-          context: SERVER_ENV
-jobs: # a collection of steps
-  build-test-deploy:
+  build:
+    jobs:
+      - build-deploy:
+          context: DEPLOY
+jobs:
+  build-deploy:
 
-    working_directory: ~/na-common # directory where steps will run
+    working_directory: ~/na-common
 
-    docker: # run the steps with Docker
-      - image: circleci/openjdk:8-jdk-stretch # ...with this image as the primary container; this is where all `steps` will run
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
 
     steps: # a collection of executable commands
 
       - checkout # check out source code to working directory
       - setup_remote_docker
 
-      - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
-          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+      - restore_cache:
           keys:
             - na-common-{{ checksum "pom.xml" }}
 
@@ -40,10 +37,15 @@ jobs: # a collection of steps
             docker network create na-network
             docker-compose --project-name na-common -f docker-compose.yml up --build --no-start na-registry
 
-      - run: echo "$GITHUB_TOKEN" | docker login https://docker.pkg.github.com --username $GITHUB_USER --password-stdin
+      - run:
+          name: docker login
+          command:
+            echo "$GITHUB_TOKEN" | docker login https://docker.pkg.github.com --username $GITHUB_USER --password-stdin
+
+      - run:
+          name: docker push
+          command: docker push docker.pkg.github.com/news-aggregator-bot/artifactory/vlad110kg.na-registry:latest
 
       - deploy:
-          name: Build, push and deploy
-          command: |
-            docker push docker.pkg.github.com/news-aggregator-bot/artifactory/vlad110kg.na-registry:latest
-            ssh $SSH_USER@$SSH_HOST "cd na && ./update-na-registry.sh"
+          name: deploy image to remote
+          command: ssh $SSH_USER@$SSH_HOST "cd na && ./update-na-registry.sh"
