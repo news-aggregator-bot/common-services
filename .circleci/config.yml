@@ -6,6 +6,9 @@ jobs: # a collection of steps
 
     docker: # run the steps with Docker
       - image: circleci/openjdk:8-jdk-stretch # ...with this image as the primary container; this is where all `steps` will run
+    branches:
+      only:
+        - master
 
     steps: # a collection of executable commands
 
@@ -14,8 +17,8 @@ jobs: # a collection of steps
 
       - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
-          keys: 
-          - na-common-{{ checksum "pom.xml" }}
+          keys:
+            - na-common-{{ checksum "pom.xml" }}
 
       - run: mvn dependency:go-offline # gets the project dependencies
 
@@ -30,6 +33,7 @@ jobs: # a collection of steps
           name: docker-compose
           command: |
             set -x
+            docker network create na-network
             docker-compose --project-name na-common -f docker-compose.yml up --build na-registry
 
       - run: echo "$GITHUB_TOKEN" | docker login $DOCKER_REPO -u $GITHUB_USER --password-stdin
