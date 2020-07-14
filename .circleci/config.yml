@@ -13,7 +13,8 @@ jobs: # a collection of steps
 
       - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
-          key: na-common-{{ checksum "pom.xml" }}
+          keys: 
+          - na-common-{{ checksum "pom.xml" }}
 
       - run: mvn dependency:go-offline # gets the project dependencies
 
@@ -24,12 +25,13 @@ jobs: # a collection of steps
 
       - run: mvn package # run the actual tests
 
-      - run: |
-          set -x
-          docker-compose --project-name na-common -f docker-compose.yml up --build na-registry
+      - run:
+          name: docker-compose
+          command: |
+            set -x
+            docker-compose --project-name na-common -f docker-compose.yml up --build na-registry
 
-      - run: |
-          docker login $DOCKER_REPO -u $GITHUB_USER -p $GITHUB_TOKEN
+      - run: echo "$GITHUB_TOKEN" | docker login $DOCKER_REPO -u $GITHUB_USER --password-stdin
 
       - deploy:
           name: Build, push and deploy
