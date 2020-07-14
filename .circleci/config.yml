@@ -4,8 +4,8 @@ workflows:
     build-test-deploy:
       - build:
         context: DOCKER
-          - deploy:
-              context: SERVER_ENV
+      - deploy:
+          context: SERVER_ENV
 jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
 
