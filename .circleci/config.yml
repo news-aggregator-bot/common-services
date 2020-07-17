@@ -36,7 +36,7 @@ jobs:
           command: |
             set -x
             docker network create na-network
-            docker-compose --project-name na-common -f docker-compose.yml up --build --no-start na-registry
+            docker-compose --project-name na -f docker-compose.yml up --build --no-start na-registry
 
       - run:
           name: docker login
