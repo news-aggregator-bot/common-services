@@ -8,15 +8,6 @@ services:
         condition: on-failure
     ports:
       - 8761:8761
-  phpmyadmin:
-    environment:
-      - PMA_HOSTS=${MYSQL_HOST}
-    image: phpmyadmin/phpmyadmin
-    deploy:
-      restart_policy:
-        condition: on-failure
-    ports:
-      - 4000:80
 networks:
   default:
     external:
