@@ -1,7 +1,6 @@
 version: '3'
 services:
   na-registry:
-    build: na-registry
     image: docker.pkg.github.com/news-aggregator-bot/artifactory/vlad110kg.na-registry
     deploy:
       restart_policy:
@@ -11,4 +10,4 @@ services:
 networks:
   default:
     external:
-      name: "na-network"
+      name: "na"
