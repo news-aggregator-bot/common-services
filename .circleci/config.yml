@@ -7,7 +7,7 @@ workflows:
 jobs:
   build-deploy:
 
-    working_directory: ~/na-common
+    working_directory: ~/na-registry
 
     docker:
       - image: circleci/openjdk:8-jdk-stretch
@@ -20,23 +20,16 @@ jobs:
 
       - restore_cache:
           keys:
-            - na-common-{{ checksum "pom.xml" }}
+            - na-registry-{{ checksum "pom.xml" }}
 
       - run: mvn dependency:go-offline # gets the project dependencies
 
       - save_cache: # saves the project dependencies
           paths:
             - ~/.m2
-          key: na-common-{{ checksum "pom.xml" }}
+          key: na-registry-{{ checksum "pom.xml" }}
 
       - run: mvn package # run the actual tests
-
-      - run:
-          name: docker-compose
-          command: |
-            set -x
-            docker network create na-network
-            docker-compose --project-name na -f docker-compose.yml up --build --no-start na-registry
 
       - run:
           name: docker login
@@ -44,9 +37,20 @@ jobs:
             echo "$GITHUB_TOKEN" | docker login https://docker.pkg.github.com --username $GITHUB_USER --password-stdin
 
       - run:
+          name: docker-compose
+          command: |
+            set -x
+            docker network create na
+            docker-compose --project-name na -f docker-compose.yml up --build --no-start na-registry
+
+      - run:
           name: docker push
           command: docker push docker.pkg.github.com/news-aggregator-bot/artifactory/vlad110kg.na-registry:latest
 
+      - run:
+          name: create ssh config
+          command: ./scripts/send-env-config.sh
+
       - deploy:
           name: deploy image to remote
-          command: ssh $SSH_USER@$SSH_HOST "cd na && ./update-na-registry.sh"
+          command: ./scripts/deploy.sh
