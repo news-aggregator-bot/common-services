@@ -1,17 +1,7 @@
-version: '3'
+version: '3.5'
 services:
   na-registry:
     build: na-registry
     restart: always
-  na-database:
-    image: mysql:5.7.30
-    environment:
-      - MYSQL_ROOT_USER=${MYSQL_ROOT_USER}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-    ports:
-      - 3306:3306
-    volumes:
-      - na-mysql-data:/var/lib/mysql
-    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
 volumes:
   na-mysql-data:
