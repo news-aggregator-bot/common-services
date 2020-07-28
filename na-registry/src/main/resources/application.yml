@@ -7,6 +7,11 @@ server:
   port: 8761
 
 eureka:
+  server:
+    eviction-interval-timer-in-ms: 1000
   client:
     registerWithEureka: false
     fetchRegistry: false
+    registryFetchIntervalSeconds: 5
+    serviceUrl:
+      defaultZone: http://na-registry:8761/eureka/
