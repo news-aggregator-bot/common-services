@@ -3,5 +3,3 @@ services:
   na-registry:
     build: na-registry
     restart: always
-volumes:
-  na-mysql-data:

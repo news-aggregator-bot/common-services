@@ -18,7 +18,8 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - na-mysql-data:/bitnami/mysql/data
+      - ~/na/db:/var/lib/mysql
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
   na-registry:
     image: docker.pkg.github.com/news-aggregator-bot/artifactory/vlad110kg.na-registry
     deploy:
@@ -26,8 +27,6 @@ services:
         condition: on-failure
     ports:
       - 8761:8761
-volumes:
-  na-mysql-data:
 networks:
   default:
     external:
