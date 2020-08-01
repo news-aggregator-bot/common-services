@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/news-aggregator-bot/na-config.git
+          search-paths: na-service
+server:
+  port: 8888
