@@ -4,6 +4,6 @@ spring:
       server:
         git:
           uri: https://github.com/news-aggregator-bot/na-config.git
-          search-paths: na-service
+          search-paths: na-service,bepicky-client-bot
 server:
   port: 8888
