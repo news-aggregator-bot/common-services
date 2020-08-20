@@ -29,7 +29,7 @@ jobs:
             - ~/.m2
           key: na-common-{{ checksum "pom.xml" }}
 
-      - run: mvn package # run the actual tests
+      - run: mvn -s .circleci/settings.xml package
 
       - run:
           name: docker login
