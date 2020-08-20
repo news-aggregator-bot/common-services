@@ -15,20 +15,13 @@
     <version>0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <repositories>
+    <distributionManagement>
         <repository>
             <id>na</id>
-            <name>bepicky-repo</name>
+            <name>news-aggregator-bot</name>
             <url>https://maven.pkg.github.com/news-aggregator-bot/artifactory</url>
-            <layout>default</layout>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
         </repository>
-    </repositories>
+    </distributionManagement>
 
     <modules>
         <module>na-registry</module>
