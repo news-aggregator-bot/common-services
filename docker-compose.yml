@@ -11,13 +11,13 @@ services:
         condition: on-failure
     ports:
       - 4000:80
-  na-config-server:
-    image: docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-config-server
-    deploy:
-      restart_policy:
-        condition: on-failure
-    ports:
-      - 8888:8888
+#  na-config-server:
+#    image: docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-config-server
+#    deploy:
+#      restart_policy:
+#        condition: on-failure
+#    ports:
+#      - 8888:8888
   na-database:
     image: mysql:5.7.30
     environment:
