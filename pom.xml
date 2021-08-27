@@ -25,6 +25,5 @@
 
     <modules>
         <module>na-registry</module>
-        <module>na-config-server</module>
     </modules>
 </project>

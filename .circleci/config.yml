@@ -41,13 +41,11 @@ jobs:
           command: |
             set -x
             docker network create picky
-            docker-compose --project-name na -f docker-compose.yml -f docker-compose.dev.yml up --build --no-start na-registry na-config-server
+            docker-compose --project-name na -f docker-compose.yml -f docker-compose.dev.yml up --build --no-start na-registry
 
       - run:
           name: docker push
-          command: |
-            docker push docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-registry:latest
-            docker push docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-config-server:latest
+          command: docker push docker.pkg.github.com/news-aggregator-bot/artifactory/bepicky.na-registry:latest
 
       - run:
           name: create ssh config

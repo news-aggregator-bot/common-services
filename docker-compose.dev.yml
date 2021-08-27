@@ -1,8 +1,5 @@
 version: '3.5'
 services:
-#  na-config-server:
-#    build: na-config-server
-#    restart: always
   na-registry:
     build: na-registry
     restart: always

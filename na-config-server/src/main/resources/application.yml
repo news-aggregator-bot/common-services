@@ -1,9 +1,0 @@
-spring:
-  cloud:
-    config:
-      server:
-        git:
-          uri: https://github.com/news-aggregator-bot/na-config.git
-          search-paths: bepicky-service,bepicky-client-bot
-server:
-  port: 8888
