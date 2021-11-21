@@ -21,7 +21,7 @@ services:
       - ~/na/db:/var/lib/mysql
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
   na-registry:
-    image: ghcr.io/news-aggregator-bot/artifactory/bepicky.na-registry
+    image: ghcr.io/news-aggregator-bot/bepicky.na-registry
     deploy:
       restart_policy:
         condition: on-failure

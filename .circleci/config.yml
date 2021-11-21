@@ -45,7 +45,7 @@ jobs:
 
       - run:
           name: docker push
-          command: docker push ghcr.io/news-aggregator-bot/artifactory/bepicky.na-registry:latest
+          command: docker push ghcr.io/news-aggregator-bot/bepicky.na-registry:latest
 
       - run:
           name: create ssh config
